@@ -47,9 +47,9 @@ class MatchingEngineSteps extends OrderStepUtils with Matchers {
   }
 
   @Then("^the following trades are generated:$")
-  def the_following_trades_are_generated(trades: java.util.List[Trade]) {
+  def the_following_trades_are_generated(trades: java.util.List[TradeRow]) {
 
-    actualTrades should equal(trades.toVector)
+    actualTrades.map(t => TradeRow(t.buying.broker, t.selling.broker, t.price, t.qty)) should equal(trades.toVector)
     actualTrades = Vector.empty
   }
 
@@ -107,5 +107,7 @@ class MatchingEngineSteps extends OrderStepUtils with Matchers {
   private case class OrderRow(broker: String, side: String, qty: Double, price: String)
 
   private case class BookRow(side: Side, broker: String, qty: Double, price: String)
+
+  private case class TradeRow(buyingBroker: String, sellingBroker: String, price: Double, qty: Double)
 
 }

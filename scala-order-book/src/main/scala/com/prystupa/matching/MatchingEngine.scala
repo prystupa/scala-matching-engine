@@ -60,7 +60,7 @@ class MatchingEngine(buy: OrderBook, sell: OrderBook) extends mutable.Publisher[
       def trade(price: Double) = {
         _referencePrice = Some(price)
         val (buy, sell) = if (order.side == Buy) (order, top) else (top, order)
-        Some(Trade(buy.broker, sell.broker, price, math.min(buy.qty, sell.qty)))
+        Some(Trade(buy, sell, price, math.min(buy.qty, sell.qty)))
       }
 
       def crosses(limit: Double, price: Double) = order.side match {

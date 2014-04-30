@@ -9,7 +9,7 @@ package com.prystupa.matching
 
 sealed trait OrderBookEvent
 
-case class Trade(buyingBroker: String, sellingBroker: String,
+case class Trade(buying: Order, selling: Order,
                  price: Double, qty: Double) extends OrderBookEvent
 
 case class RejectedOrder(order: Order) extends OrderBookEvent

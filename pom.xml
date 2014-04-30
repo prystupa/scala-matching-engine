@@ -10,6 +10,8 @@
 
     <modules>
         <module>scala-order-book</module>
+        <module>matching-engine-app</module>
+        <module>broker-app</module>
     </modules>
 
     <properties>
@@ -21,6 +23,9 @@
         <scalatest.version>2.1.4</scalatest.version>
         <cucumber.version>1.1.6</cucumber.version>
         <junit.version>4.11</junit.version>
+        <akka.version>2.3.2</akka.version>
+        <camel.version>2.13.0</camel.version>
+        <logback.version>1.1.2</logback.version>
     </properties>
 
     <dependencies>
@@ -29,6 +34,13 @@
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
 
         <!-- Test -->
