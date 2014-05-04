@@ -1,4 +1,4 @@
-package com.prystupa.matching
+package com.prystupa.matching.engine
 
 trait ConfigurationComponent {
 

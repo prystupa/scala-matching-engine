@@ -1,7 +1,8 @@
-package com.prystupa.matching
+package com.prystupa.matching.engine
 
 import akka.actor.{ActorLogging, ActorRef, Actor}
 import scala.collection.mutable
+import com.prystupa.matching._
 import scala.util.Success
 
 trait OrderProcessorComponent {

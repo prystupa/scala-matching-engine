@@ -22,10 +22,10 @@ class OrderBookSteps extends OrderStepUtils with Matchers {
   var actualRejected = Vector.empty[Order]
   var actualCancelled = Vector.empty[Order]
 
-  events {
-    case RejectedOrder(order) => actualRejected :+= order
-    case CancelledOrder(order) => actualCancelled :+= order
-  }
+  events(
+    actualRejected :+= _.order,
+    actualCancelled :+= _.order
+  )
 
   @Given("^the following orders are added to the \"([^\"]*)\" book:$")
   def the_following_orders_are_added_to_the_book(side: String, orderTable: java.util.List[OrderRow]) {
@@ -92,10 +92,10 @@ class OrderBookSteps extends OrderStepUtils with Matchers {
   }
 
 
-  private def events(handler: PartialFunction[OrderBookEvent, Unit]) {
+  private def events(fRejected: RejectedOrder => Unit, fCanceled: CancelledOrder => Unit) {
     List(buyBook, sellBook).foreach(book => book.subscribe(new book.Sub {
       def notify(pub: book.Pub, event: OrderBookEvent) {
-        handler(event)
+        event.forEach(_ => (), fRejected, fCanceled)
       }
     }))
   }

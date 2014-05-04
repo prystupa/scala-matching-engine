@@ -1,4 +1,4 @@
-package com.prystupa.matching
+package broker
 
 trait ConfigurationComponent {
 

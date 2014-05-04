@@ -1,8 +1,7 @@
-package com.prystupa.matching
+package com.prystupa.matching.engine
 
 import akka.actor.{ActorRef, ActorLogging, Actor}
 import akka.camel.{CamelMessage, Consumer}
-import scala.util.{Success, Failure}
 
 trait OrderInputGatewayComponent {
 

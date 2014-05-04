@@ -101,7 +101,7 @@ class OrderBook(side: Side) extends mutable.Publisher[OrderBookEvent] {
         val level = order.limit.fold(bl)(priceOrdering.max(_, bl))
         val ref = insertLimit(level, order)
         ref.addToPegs()
-      case None => publish(if (isNewOrder) RejectedOrder(order) else CancelledOrder(order))
+      case None => publish(if (isNewOrder) OrderBookEvent(RejectedOrder(order)) else OrderBookEvent(CancelledOrder(order)))
     }
   }
 

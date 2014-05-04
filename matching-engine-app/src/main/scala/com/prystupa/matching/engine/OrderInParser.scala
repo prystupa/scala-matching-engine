@@ -1,6 +1,7 @@
-package com.prystupa.matching
+package com.prystupa.matching.engine
 
 import scala.util.Try
+import com.prystupa.matching._
 
 trait OrdersInParser {
   def parse(message: String): Try[Order]

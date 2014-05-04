@@ -1,6 +1,10 @@
-package com.prystupa.matching
+package com.prystupa.matching.engine
 
 import org.scalatest.{Matchers, path}
+import com.prystupa.matching._
+import com.prystupa.matching.MarketOrder
+import com.prystupa.matching.LimitOrder
+import scala.Some
 import scala.util.Success
 
 class OrderInParserTest extends path.FunSpec with Matchers {

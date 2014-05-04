@@ -25,9 +25,9 @@ class MatchingEngineSteps extends OrderStepUtils with Matchers {
   var actualCancelled = Vector.empty[Order]
 
   events {
-    case trade: Trade => actualTrades = actualTrades :+ trade
-    case RejectedOrder(order) => actualRejected = actualRejected :+ order
-    case CancelledOrder(order) => actualCancelled = actualCancelled :+ order
+    case OrderBookEvent(Some(trade), _, _) => actualTrades = actualTrades :+ trade
+    case OrderBookEvent(_, Some(RejectedOrder(order)), _) => actualRejected = actualRejected :+ order
+    case OrderBookEvent(_, _, Some(CancelledOrder(order))) => actualCancelled = actualCancelled :+ order
   }
 
 

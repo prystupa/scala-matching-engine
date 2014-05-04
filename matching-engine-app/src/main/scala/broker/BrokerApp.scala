@@ -1,4 +1,4 @@
-package com.prystupa.matching
+package broker
 
 import akka.actor.{Props, ActorSystem}
 
