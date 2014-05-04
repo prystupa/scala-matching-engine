@@ -19,12 +19,17 @@ object OrderBook {
 
 }
 
-class OrderBook(side: Side) extends mutable.Publisher[OrderBookEvent] {
+class OrderBook(side: Side) {
 
   private val marketBook = FastList[Order]()
   private val limitBook = FastList[OrdersAtLimit]()
   private val priceOrdering = if (side == Sell) Ordering.ordered[Double] else Ordering.ordered[Double].reverse
   private val modifier = new BookModifier
+  private val rejectedPub = new OrderPublisher
+  private val cancelledPub = new OrderPublisher
+
+  val rejected: mutable.Publisher[Order] = rejectedPub
+  val cancelled: mutable.Publisher[Order] = cancelledPub
 
   def add(order: Order) {
 
@@ -101,7 +106,7 @@ class OrderBook(side: Side) extends mutable.Publisher[OrderBookEvent] {
         val level = order.limit.fold(bl)(priceOrdering.max(_, bl))
         val ref = insertLimit(level, order)
         ref.addToPegs()
-      case None => publish(if (isNewOrder) OrderBookEvent(RejectedOrder(order)) else OrderBookEvent(CancelledOrder(order)))
+      case None => if (isNewOrder) rejectedPub.publish(order) else cancelledPub.publish(order)
     }
   }
 
@@ -181,6 +186,10 @@ class OrderBook(side: Side) extends mutable.Publisher[OrderBookEvent] {
     def addToPegs() {
       list.value.pegs.append(this)
     }
+  }
+
+  private class OrderPublisher extends mutable.Publisher[Order] {
+    override def publish(order: Order): Unit = super.publish(order)
   }
 
 }

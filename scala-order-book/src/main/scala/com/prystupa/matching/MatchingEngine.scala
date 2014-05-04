@@ -9,7 +9,7 @@ import collection.mutable
  * Time: 8:14 PM
  */
 
-class MatchingEngine(buy: OrderBook, sell: OrderBook) extends mutable.Publisher[OrderBookEvent] {
+class MatchingEngine(buy: OrderBook, sell: OrderBook) extends mutable.Publisher[Trade] {
 
   private val matchBuyOrder = new Matcher(buy, sell)
   private val matchSellOrder = new Matcher(sell, buy)
@@ -49,7 +49,7 @@ class MatchingEngine(buy: OrderBook, sell: OrderBook) extends mutable.Publisher[
           case None => Some(order)
           case Some(trade) =>
             decreaseTopBy(trade.qty)
-            publish(OrderBookEvent(trade))
+            publish(trade)
             val unfilledOrder = order.withQty(order.qty - trade.qty)
             tryMatch(unfilledOrder)
         }

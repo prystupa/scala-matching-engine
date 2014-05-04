@@ -13,7 +13,12 @@ trait OrderProcessorComponent {
     private val sell = new OrderBook(Sell)
     private val matchingEngine = new MatchingEngine(buy, sell)
 
-    List(buy, sell, matchingEngine).foreach(publisher => subscribe(publisher))
+    subscribe[Trade](matchingEngine, "trade")
+    List(buy, sell) foreach {
+      book =>
+        subscribe(book.rejected, "rejected")
+        subscribe(book.cancelled, "cancelled")
+    }
 
     override def receive: Receive = {
       case Success(order: Order) =>
@@ -23,9 +28,10 @@ trait OrderProcessorComponent {
 
   }
 
-  private def subscribe(publisher: mutable.Publisher[OrderBookEvent]): Unit = publisher.subscribe(new publisher.Sub {
-    override def notify(pub: publisher.Pub, event: OrderBookEvent): Unit = {
-      orderBookEventGateway ! event
+  private def subscribe[T](publisher: mutable.Publisher[T], discriminator: String): Unit = publisher.subscribe(new publisher.Sub {
+    override def notify(pub: publisher.Pub, event: T): Unit = {
+      val gatewayEvent = Map[String, T](discriminator -> event)
+      orderBookEventGateway ! gatewayEvent
     }
   })
 }

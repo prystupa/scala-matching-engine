@@ -6,6 +6,7 @@ import com.prystupa.matching._
 import scala.collection.JavaConversions._
 import cucumber.api.java.en.{When, Then, Given}
 import org.scalatest.Matchers
+import scala.collection.mutable
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,10 +23,11 @@ class OrderBookSteps extends OrderStepUtils with Matchers {
   var actualRejected = Vector.empty[Order]
   var actualCancelled = Vector.empty[Order]
 
-  events(
-    actualRejected :+= _.order,
-    actualCancelled :+= _.order
-  )
+  List(buyBook, sellBook) foreach {
+    book =>
+      subscribe[Order](book.rejected, o => actualRejected = actualRejected :+ o)
+      subscribe[Order](book.cancelled, o => actualCancelled = actualCancelled :+ o)
+  }
 
   @Given("^the following orders are added to the \"([^\"]*)\" book:$")
   def the_following_orders_are_added_to_the_book(side: String, orderTable: java.util.List[OrderRow]) {
@@ -91,15 +93,15 @@ class OrderBookSteps extends OrderStepUtils with Matchers {
     actualCancelled = Vector.empty
   }
 
+  private def subscribe[T](publisher: mutable.Publisher[T], handler: T => Unit): Unit = {
 
-  private def events(fRejected: RejectedOrder => Unit, fCanceled: CancelledOrder => Unit) {
-    List(buyBook, sellBook).foreach(book => book.subscribe(new book.Sub {
-      def notify(pub: book.Pub, event: OrderBookEvent) {
-        event.forEach(_ => (), fRejected, fCanceled)
+    publisher.subscribe(new publisher.Sub {
+      def notify(pub: publisher.Pub, event: T) {
+        handler(event)
       }
-    }))
+    })
   }
-
+  
   private case class OrderRow(broker: String, qty: Double, price: String)
 
   private case class BookRow(broker: String, qty: Double, price: String)

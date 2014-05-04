@@ -6,6 +6,7 @@ import cucumber.api.java.en.{Given, When, Then}
 import cucumber.api.DataTable
 import com.prystupa.matching._
 import org.scalatest.Matchers
+import scala.collection.mutable
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,12 +25,12 @@ class MatchingEngineSteps extends OrderStepUtils with Matchers {
   var actualRejected = Vector.empty[Order]
   var actualCancelled = Vector.empty[Order]
 
-  events {
-    case OrderBookEvent(Some(trade), _, _) => actualTrades = actualTrades :+ trade
-    case OrderBookEvent(_, Some(RejectedOrder(order)), _) => actualRejected = actualRejected :+ order
-    case OrderBookEvent(_, _, Some(CancelledOrder(order))) => actualCancelled = actualCancelled :+ order
+  subscribe[Trade](matchingEngine, t => actualTrades = actualTrades :+ t)
+  List(buyBook, sellBook) foreach {
+    book =>
+      subscribe[Order](book.rejected, o => actualRejected = actualRejected :+ o)
+      subscribe[Order](book.cancelled, o => actualCancelled = actualCancelled :+ o)
   }
-
 
   @When("^the following orders are submitted in this order:$")
   def the_following_orders_are_submitted_in_this_order(orders: java.util.List[OrderRow]) {
@@ -81,13 +82,13 @@ class MatchingEngineSteps extends OrderStepUtils with Matchers {
   }
 
 
-  private def events(handler: PartialFunction[OrderBookEvent, Unit]) {
+  private def subscribe[T](publisher: mutable.Publisher[T], handler: T => Unit): Unit = {
 
-    List(matchingEngine, buyBook, sellBook).foreach(publisher => publisher.subscribe(new publisher.Sub {
-      def notify(pub: publisher.Pub, event: OrderBookEvent) {
+    publisher.subscribe(new publisher.Sub {
+      def notify(pub: publisher.Pub, event: T) {
         handler(event)
       }
-    }))
+    })
   }
 
   private def parseExpectedBooks(book: DataTable): (List[BookRow], List[BookRow]) = {
