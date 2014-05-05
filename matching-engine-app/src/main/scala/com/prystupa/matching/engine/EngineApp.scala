@@ -10,7 +10,7 @@ object EngineApp
   with OrderBookEventOutputGatewayComponent {
 
   val system = ActorSystem("MatchingEngineApp")
-  val orderParser = OrderInParser
+  val orderParser = OrderParser
   val orderProcessor = system.actorOf(Props(new OrderProcessor))
   val orderBookEventGateway = system.actorOf(Props(new OrderBookEventOutputGateway))
 

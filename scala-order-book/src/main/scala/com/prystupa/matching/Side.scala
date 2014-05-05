@@ -7,9 +7,17 @@ package com.prystupa.matching
  * Time: 3:13 PM
  */
 
-trait Side
 
-case object Buy extends Side
+sealed trait Side {
+  def value: String
 
-case object Sell extends Side
+  override def toString: String = value
+}
 
+object Buy extends Side {
+  override def value: String = "buy"
+}
+
+object Sell extends Side {
+  override def value: String = "sell"
+}

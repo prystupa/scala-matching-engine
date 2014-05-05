@@ -1,5 +1,7 @@
 package com.prystupa.matching
 
+import java.util.UUID
+
 /**
  * Created with IntelliJ IDEA.
  * User: eprystupa
@@ -8,6 +10,7 @@ package com.prystupa.matching
  */
 
 sealed trait Order {
+  val id: String = UUID.randomUUID().toString
   val broker: String
   val qty: Double
   val side: Side

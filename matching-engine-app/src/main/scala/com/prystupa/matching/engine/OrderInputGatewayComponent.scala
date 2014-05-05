@@ -7,7 +7,7 @@ trait OrderInputGatewayComponent {
 
   def orderInputEndpointUri: String
 
-  def orderParser: OrdersInParser
+  def orderParser: OrderParser
 
   def orderProcessor: ActorRef
 

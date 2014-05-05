@@ -4,12 +4,14 @@ import org.scalatest.{Matchers, path}
 import com.prystupa.matching._
 import com.prystupa.matching.MarketOrder
 import com.prystupa.matching.LimitOrder
-import scala.Some
 import scala.util.Success
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
-class OrderInParserTest extends path.FunSpec with Matchers {
+@RunWith(classOf[JUnitRunner])
+class OrderParserTest extends path.FunSpec with Matchers {
 
-  val parser = OrderInParser
+  val parser = OrderParser
 
   it("parses Buy market order") {
     parser.parse("A: IBM buy 100") should equal(Success(MarketOrder("A", Buy, 100)))

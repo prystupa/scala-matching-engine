@@ -45,6 +45,13 @@
             <artifactId>camel-rabbitmq</artifactId>
             <version>${camel.version}</version>
         </dependency>
+
+        <!-- serializing -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-scala_${scala.version.short}</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

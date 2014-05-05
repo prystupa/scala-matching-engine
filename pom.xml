@@ -25,6 +25,7 @@
         <akka.version>2.3.2</akka.version>
         <camel.version>2.13.0</camel.version>
         <logback.version>1.1.2</logback.version>
+        <jackson.version>2.4.0-rc1</jackson.version>
     </properties>
 
     <dependencies>
